@@ -1,0 +1,10 @@
+base
+ngram
+knitr
+kableExtra
+lattice
+survival
+Formula
+ggplot2
+Hmisc
+RColorBrewer

@@ -1,0 +1,348 @@
+---
+title: "Korpus Einfaches Deutsch (KED)"
+subtitle: "Corpus Simple German"
+bibliography: simple-german.bib
+output: html_document
+always_allow_html: yes
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r libraries, include=FALSE}
+library(ngram)
+library(knitr)
+library(kableExtra)
+library(Hmisc)
+```
+
+<p style="color:red;font-weight:bold;text-align:center;"><br>Corpus and website still under construction and subject to changes, corpus not available for download yet<br>Korpus und Webseite noch im Aufbau, Änderungen vorbehalten, Korpus noch nicht zum Download verfügbar</p>
+
+# {.tabset}
+
+## Deutsch 
+
+### Was ist KED? 
+
+Das Korpus Einfaches Deutsch (KED) ist eine große digitale Sammlung von Texten auf einfachem Deutsch aus Bildungsgenres und Genres des öffentlichen Diskurses. KED enthält zum Beispiel Lexikoneinträge, Anleitungen, Erzählungen und Texte über schulisches Fachwissen oder gesellschaftlich relevante Themen wie Politik, Wirtschaft, Kultur und Gesetze. Die Texte sind ohne sprachpädagogische Absicht für Lesende geschrieben, die noch nicht die nötigen Fähigkeiten für das Lesen bildungssprachlicher Texte ["Bildungssprache", @Gogolin.2016] entwickelt haben oder sie nicht entwickeln können, zum Beispiel Kinder oder Lesende mit dauerhaften kognitiven Einschränkungen. KED ist gedacht als Resource für daten-geleitetes Deutsch-als-Fremdsprache (DaF)-Lernen auf Anfängerniveau und für die Erforschung sprachlicher Komplexität und richtet sich an Lernende, Lehrende und linguistisch Forschende auf diesen Gebieten. 
+
+Sie können KED [hier]() herunterladen. 
+
+### Woraus besteht KED?
+
+Die in KED enthaltenen Texte sind verschiedenen Internetseiten mittels *Sketch Engine* [@Kilgarriff.2014, [https://www.sketchengine.eu/](https://www.sketchengine.eu/)] entnommen. 
+
+```{r read-in-texts, echo=FALSE, cache=TRUE}
+dirsList<-list.dirs(path = "./corpus/", full.names = FALSE, recursive = TRUE)[-1]
+
+data<-data.frame(matrix(nrow = 0, ncol = 3))
+for(i in 1:length(dirsList)){
+  path<-paste("./corpus/", dirsList[i], "/", sep = "")
+  filesList<-list.files(path = path, recursive = TRUE, pattern = "\\.txt$", full.names = TRUE)
+  for(j in 1:length(filesList)){
+    df<-as.data.frame(read.delim(filesList[j], quote = "", header = FALSE, stringsAsFactors = FALSE))
+    df$FILE<-gsub("./corpus/klexikon//", "", filesList[j], fixed = TRUE)
+    df$SOURCE<-dirsList[i]
+    data<-rbind(data, df)
+  }
+}
+colnames(data)<-c("TEXT", "FILE", "SOURCE")
+```
+
+```{r overview-table-German, echo=FALSE, cache=TRUE}
+
+sources<-unique(data$SOURCE)
+
+df<-data.frame(matrix(nrow = length(sources), ncol = 2))
+for(i in 1:length(sources)){
+  rownames(df)[i]<-sources[i]
+  df[i,1]<-nrow(data[data$SOURCE == sources[i],])
+  df[i,2]<-wordcount(data$TEXT[data$SOURCE == sources[i]], sep = " ")
+}
+
+df<-rbind(df, colSums(df)) 
+rownames(df)[nrow(df)]<-"Total"
+
+df["klexikon",3]<-"Texte von [www.klexikon.zum.de](https://klexikon.zum.de), einer Online-Enzyklopädie für Kinder, ähnlich *Wikipedia*"
+df["klexikon",4]<-"[CC BY-NC 3.0 DE](https://creativecommons.org/licenses/by-nc/3.0/de/deed.en)"
+df["nachrichtenleicht",3]<-"Texte von [www.nachrichtenleicht.de](https://www.nachrichtenleicht.de), einer Nachrichten-Internetseite in einfacher Sprache vom öffentlich-rechtlichen Deutschlandradio"
+df["nachrichtenleicht",4]<-"[Deutschlandradio](https://www.nachrichtenleicht.de/impressum.2051.de.html)"
+df["oekoleo",3]<-"Texte von [www.oekoleo.de](https://www.oekoleo.de), einer Internetseite der hessischen Regierung, die Kinder über Natur- und Umweltschutz informiert"
+df["oekoleo",4]<-"[CC BY-NC 3.0 DE](https://creativecommons.org/licenses/by-nc/3.0/de/deed.en)"
+# df["geolino",3]<-"Texte von [www.geo.de/geolino](https://www.geo.de/geolino), der Kinder-Version des bekannten deutschsprachigen Monatsmagazins *Geo*. Die Webseite enthält allgemeinbildende Texte, Bastel- und Spieleanleitungen, Rezepte und Enzyklopädie-Einträge."
+# df["geolino",4]<-"[G+J Medien GmbH](https://www.geo.de/geolino/impressum)"
+df["rossipotti",3]<-"Texte von [www.rossipotti.de](https://www.rossipotti.de), einem Online-Literaturmagazin für Kinder, das neben narrativen Texten ein Literaturlexikon, informative Texte über Genres, Autoren, Literaturgeschichte, Buchrezensionen und anderes enthält."
+df["rossipotti",4]<-"[Rossipotti e.V.](https://www.rossipotti.de/ausgabe28/impressum.html)"
+df["rechte-einfach",3]<-"Texte in leichter Sprache über juristische Themen und Gesetze aus verschiedenen Quellen: [www.ich-kenne-meine-rechte.de](https://www.ich-kenne-meine-rechte.de), [UN Behinderrechtskonvention in Leichter Sprache](https://www.bmas.de/SharedDocs/Downloads/DE/PDF-Publikationen/a729L-un-konvention-leichte-sprache.pdf;jsessionid=54B4318ACC82F22C3D6B668346E0E38F.delivery2-master?__blob=publicationFile&v=1), [Kinder-Rechte in Leichter Sprache](https://www.awo.org/sites/default/files/2019-07/AWO_UN_Kinderrechte_Leichte%20Sprache_Ansicht.pdf)"
+df["rechte-einfach",4]<-"[*Institut für Menschenrechte*](http://www.ich-kenne-meine-rechte.de/index.php?menuid=44&reporeid=28), [*AWO-Bundesverband*](https://www.awo.org/impressum), [CC BY-NC-ND 4.0](https://creativecommons.org/licenses/by-nc-nd/4.0/legalcode)"
+df["labbe",3]<-"Erzählungen, Märchen, Bastel- und Spieleanleitungen usw. für Kinder von der Internetseite [www.labbe.de/lesekorb](http://www.labbe.de/lesekorb)"
+df["labbe",4]<-"[LABBÈ GmbH](https://www.labbe.de/lesekorb/index.asp?themaid=89&titelid=710)"
+df["hanisauland",3]<-"Texte, Lexikoneinträge, Buchrezensionen usw. zu politischen Themen von der Bildungswebseite für Kinder [www.hanisauland.de](https://www.hanisauland.de/index.html) der Bundeszentrale für politische Bildung"
+df["hanisauland",4]<-"[CC BY-NC 3.0 DE](https://creativecommons.org/licenses/by-nc/3.0/de/deed.en)"
+df["simplyscience",3]<-"Texte und Lexikoneinträge zu naturwissenschaftlichen Themen sowie Anleitungen für spielerische Experimente für Kinder und Jugendliche [www.simplyscience.ch](https://www.simplyscience.ch/home.html)"
+df["simplyscience",4]<-"[SimplyScience Stiftung](https://www.simplyscience.ch/ueber-uns.html)"
+
+
+rownames(df)<-capitalize(rownames(df))
+
+options(knitr.kable.NA = '')
+kable(df, format = "html", col.names = c("Texte", "Wörter", "Quelle", "Copyright"), row.names = TRUE) %>%
+  kable_styling(bootstrap_options = c("basic", "responsive"))
+```
+
+Ein großer Teil von KED besteht aus Texten in vereinfachter Sprache ["leichte Sprache", "einfache Sprache", @Kellermann.2014]. Vereinfachte Sprache soll Texte für Lesende mit verminderter Lesefähigkeit verständlicher machen, ohne dabei den Inhalt zu verzerren [@Stefanowitsch.2014]. 
+
+Leichte Sprache | Einfache Sprache
+-----------------------------------| -----------------------------------
+Leichte Sprache folgt bestimmten sprachlichen und ortho- und typografischen Prinzipien [@LeichteSprache.2017], um schwierige juristische Texte für Lesende mit kognitiven oder perzeptuellen Einschränkungen verständlicher zu machen. Die Texte im KED-Teilkorpus *Rechte-einfach* sind gute Beispiele für Texte in leichter Sprache. | Einfache Sprache folgt keinen besonderen Prinzipien und richtet sich an einen größeren Kreis von Lesenden mit Schwierigkeiten beim Textverständnis [12.1% der erwachsenen Bevölkerung im Jahr 2018, @Grotlueschen.2019, p. 5]. Die Texte im KED-Teilkorpus *Nachrichtenleicht* sind gute Beispiele für Texte in einfacher Sprache. 
+
+Ein weiterer großer Teil von KED besteht aus **allgemein- und fachlich bildenden Texten für Kinder**. Gute Beispiele hierfür sind die Texte im Teilkorpus *Oekoleo*. Außerdem enthält KED einige **narrative Texte für Kinder** (z.B. Erzählungen, Märchen, Kurzgeschichten), zum Beispiel im Teilkorpus *Rossipotti*. 
+
+KED enthält *keine* Texte mit explizit sprachpädagogischer Absicht, wie zum Beispiel Texte vom *Goethe Institut* oder von der *Deutschen Welle*, die speziell für DaF-Lernende geschrieben sind. Obwohl KED als Resource für den DaF-Unterricht gedacht ist, sind keine solchen Texte in KED enthalten, weil diese Texte oft nicht in einfachem Deutsch geschrieben sind und auch häufig nicht den wirklichen Sprachgebrauch abbilden [@Tschirner.2019]. 
+
+### Wofür ist KED gemacht? 
+#### Daten-geleitetes Fremdsprachenlernen auf Anfängerniveau
+
+Korpus-linguistische Studien haben gezeigt, dass der Sprachgebrauch erwachsener Muttersprachler nicht auf grammatischen Regeln basiert, sondern vielmehr wiederkehrenden Mustern folgt und zu einem erheblichen Teil aus vorgefertigten Chunks besteht [@Sinclair.1991;@Wray.2000]. Sowohl mutter- als auch fremdsprachliche Lernende erwerben die Muster und Chunks ihrer Zielsprache durch Übung aus dem Sprachgebrauch [@Ellis.2016;@Tomasello.2003]. 
+
+Übereinstimmend hiermit sieht das daten-geleitete Fremdsprachenlernen ("data-driven language learning" [DDL]) eine induktive, auf Input und Übung basierte Vermittlungsweise vor. Während aber gebrauchsbasierter Spracherwerb in natura meist beiläufig und unbewusst geschieht, stehen im Klassenzimmer das Lernen und das Gelernte im Zentrum der Aufmerksamkeit der Lernenden. Bei DDL nehmen die Lernenden die Rolle von Forschenden an und nutzen digitale Korpus-Technologie (sogenannte Konkordanzer), um die Gebrauchsmuster und Chunks ihrer Zielsprache selbstständig zu entdecken [@Cobb.2015;@Johns.1991]. KED ermöglicht DDL mit Lernenden auf Anfängerniveau, deren Lesefähigkeiten noch nicht gut genug für den Umgang mit bildungssprachlichen Texten ausgebildet sind. 
+
+Beispiel. Als besonders schwierig für DaF-Lernende (und -Lehrende) hat sich die Grammatik sogenannter Wechselpräpositionen (*in*, *an*, *auf*, ...) erwiesen, die abhängig von Bedeutung und Gebrauchskontext entweder mit Dativ oder Akkusativ genutzt werden [@Willems.2018]. Neuere korpus-linguistische Forschung [@Jach.2020] hat jedoch gezeigt, dass auch der Gebrauch von Wechselpräpositionen zum Teil wiederkehrenden Mustern folgt und an bestimmte lexikalische Items gebunden ist. Mit einem Konkordanzer [z.B. *AntConc* von @Anthony.2019, [www.laurenceanthony.net](https://www.laurenceanthony.net/software/antconc/)] durchsuchen die Lernenden das KED-Teilkorpus *Nachrichtenleicht* nach Belegen für die drei häufigsten Wechselpräpositionen *in*, *an* und *auf*, gefolgt von einem definiten Artikel. Sie versuchen dann, in den Suchergebnissen wiederkehrende Muster im Gebrauch zu entdecken. Eine Stichprobe der Ergebnisse ist hier in Form von sogenannten Konkordanzen (oder KWICS) abgedruckt. 
+
+Linker Kontext | Suchwort | Rechter Kontext
+-------------------------------|------|-------------------------------
+Es ist ein Staat auf den Britischen Inseln. Sie liegen | in der | Nord-See. Die größte Insel heißt Groß-Britannien. 
+Der Grüne Hügel ist eine Anhöhe | in der | Stadt Bayreuth. Dort ließ der Komponist Richard Wagner 
+die Signale von dem Fahrzeug und schickt sie weiter | an die | Forscher auf der Erde. Das ist wichtig, weil
+Am Ende stand es 28 zu 24 für Kiel. Das Pokal-End-Spiel war | in der | Stadt Hamburg. Mehr als 13.000 Menschen 
+Jungen und ihr Fußball-Trainer waren mehr als 2 Wochen | in der | Höhle eingeschlossen. Die Jungen wurden
+wollen mit den Bränden zeigen, wie schlimm das Leben | in dem | Lager ist. Viele Zelte, Hütten und Wohnungen sind zerstört. 
+Die Bundes-Regierung hat beschlossen: Sie beteiligt sich | an der | Entschädigung von den Kunden. Es geht dabei um 
+Eine Rakete kann sehr schnell | in den | Himmel fliegen. Sie kann Astronauten oder Vorräte  
+Die deutsche Fußball-National-Mannschaft hat | in der | Nations League gegen die Niederlande gespielt. 
+Obwohl es einen schweren Anschlag | in der | Stadt Halle gegeben hat, sollen die jüdischen Kultur-Tage
+Ich habe alle Regeln beachtet. Die Tische | in dem | Restaurant haben weit genug auseinander gestanden
+Museen. Zum Beispiel das Haus der Geschichte | in der | Stadt Bonn. Da kann man Sachen sehen,
+Eine Kita ist ein Ort, | an dem | kleine Kinder spielen und lernen. Erzieher und
+Sie haben vorher 35 Jahre lang | in die | Renten-Versicherung eingezahlt. Die SPD will 
+ist 4 Jahre lang Präsident im Land USA gewesen. Das war | in den | Jahren 1989 bis 1993. In dieser Zeit 
+heißt Yamoussoukro. Die meisten Menschen | in der | Elfenbein-Küste sprechen Französisch.
+Kohlen-Dioxid steigt in die Luft und sorgt dafür, dass es | auf der | Erde immer wärmer wird. Das nennt 
+Ein End-Lager ist ein Ort, | an dem | man etwas lange Zeit aufbewahren kann. Meistens ist damit  
+Jetzt hat die neue Saison angefangen. Das erste Rennen war | in dem | Land Österreich. 
+ist zuerst in dem Land China gewesen. Viele Menschen | auf der | ganzen Welt haben sich angesteckt, auch in 
+
+Bei der Arbeit mit den Konkordanzen entdecken die Lernenden zum Beispiel, dass die Präposition *in* viel häufiger genutzt wird als *an* und *auf*. *In* wird außerdem oft in Verbindung mit *der* gebraucht (*in der*). Wie in neueren Lehrwerken üblicherweise dargestellt [z.B. @Funk.2016, p. 211], werden die Präpositionen regelmäßig in Ergänzungen von Bewegungs- und Haltungsverben genutzt (z.B. *Sie liegen in der Nord-See*). Außerdem erscheinen sie oft in lokalen (und manchmal auch in temporalen) Angaben (z.B. *meisten Menschen in der Elfenbein-Küste*). Der Dativ ist häufiger als der Akkusativ. Auf der Grundlage der Belege konstruieren die Lernenden vielleicht die Regel, dass der Akkusativ in zielgerichteten Kontexten, der Dativ dagegen in nicht-zielgerichteten Kontexten verwendet wird. Die Konkordanzen enthalten zudem komplexe, bildungssprachliche Konstruktionen, zum Beispiel das phrasale Verb *sich beteiligen an* oder zwei präpositionale Relativsätze (*ein Ort, an dem*). Und so weiter. Suchanfragen in anderen (Teil-)Korpora ergeben andere (oder ähnliche) relative Häufigkeiten und Gebrauchsmuster. Die Lernenden sollten weitere Konkordanzen erforschen und versuchen, ihre Beobachtungen Schritt für Schritt zu verallgemeinern. Typische Übungen sind z.B. wiederkehrende Bestandteile in den Konkordanzen zu markieren, die Konkordanzen in Gruppen zu sortieren, ihre Strukturen zu imitieren, sie umzuformen, anzureichern und so weiter. 
+
+Für mehr und genauere Beschreibungen von Unterrichtsaktivitäten siehe die oben zitierten DDL-Publikationen oder @Dubova.2016, @Lenko-Szymanska.2015 und @Flowerdew.2012. Nach einer gewissen Eingewöhnungsphase empfinden viele Lernende DDL als faszinierend und spaßig. Eine Meta-Studie hat zudem gezeigt, dass DDL effektiv und effizienter als andere Lehr- und Lernansätze ist [@Boulton.2017].
+
+#### Erforschung sprachlicher Komplexität
+
+```{r compare-corpora, cache=TRUE, include=FALSE}
+filesList<-list.files(path = "./tagged-subcorpora", recursive = TRUE, pattern = "\\.Rda$", full.names = TRUE)
+data<-vector(mode = "list", length = length(filesList))
+for(i in 1:length(filesList)){
+  data[[i]]<-readRDS(filesList[i])
+  names(data)[i]<-filesList[i]
+}
+
+sentLength<-vector(length = length(data))
+for(i in 1:length(data)){
+  sentLength[i]<-mean(sapply(split(data[[i]], data[[i]][["SENTENCE"]]), function(x) nrow(x), simplify = TRUE))
+  names(sentLength)[i]<-names(data)[i]
+}
+
+wordLength<-vector(length = length(data))
+for(i in 1:length(data)){
+  wordLength[i]<-mean(nchar(data[[i]][["TOKEN"]]))
+  names(wordLength)[i]<-names(data)[i]
+}
+
+ttratio<-vector(length = length(data))
+for(i in 1:length(data)){
+  ttratio[i]<-length(unique(data[[i]][["TOKEN"]]))/nrow(data[[i]])
+  names(ttratio)[i]<-names(data)[i]
+}
+
+RCs<-data.frame(matrix(ncol = 2, nrow = length(data)))
+for(i in 1:length(data)){
+  RCs[i,1]<-length(which(data[[i]][["POS"]] %in% c("PRELS", "PRELAT")))/max(data[[i]]["SENTENCE"])*1000
+  RCs[i,2]<-names(data)[i]
+}
+```
+
+KED ist außerdem für die linguistische Erforschung sprachlicher Komplexität gedacht. Komplexität ist schwierig zu definieren und die Linguistik hat eine Vielzahl von Messmethoden erarbeitet [@Neumann.2018]. Einige Forschende nehmen beispielweise an, dass die Komplexität eines Textes mit der durchschnittlichen Länge seiner Wörter oder Sätze oder dem Verhältnis von Typen- und Tokenanzahl (Anzahl verschiedener Wortformen und Anzahl aller Wortformen) zunimmt. Wenn das stimmt, dann sollten diese Werte in KED durchschnittlich niedriger als in normalsprachlichen Korpora liegen. Zur Veranschaulichung werden im Folgenden die KED-Teilkorpora *Nachrichtenleicht* und *Klexikon* mit Sammlungen deutschsprachiger Zeitungsnachrichten und *Wikipedia*-Artikeln aus der Leipzig Corpus Collection [@Goldhahn.2012] verglichen. Wie erwartet, liegen die KED-Teilkorpora in allen drei Maßen unterhalb der Vergleichskorpora. 
+
+```{r compare-corpora-table-German, echo=FALSE, cache=TRUE}
+df<-data.frame(wordLength, sentLength, ttratio)
+rownames(df)<-c("Zeitungsnachrichten", "Wikipedia", "Klexikon", "Nachrichtenleicht")
+kable(df[c(1,4,2,3),], format = "html", row.names = TRUE, digits = 2, col.names = c("Wortlänge", "Satzlänge", "Typen/Tokens")) %>%
+  kable_styling(bootstrap_options = c("striped", "hover", "condensed", "responsive"))
+```
+
+Um noch ein weiteres Beispiel zu geben, in der Psycholinguistik gelten Sätze mit Relativsätzen (zum Beispiel *die Frau, die gerannt ist, geht jetzt schwimmen*) als schwieriger zu verstehen als einfache Sätze [@Gibson.2000]. Wenn Relativsätze wirklich schwierig zu verstehen sind, dann sollten sie in vereinfachten Texten seltener vorkommen als in normalsprachlichen Texten. Das folgende Diagramm vergleicht den Anteil von Relativsätzen in den KED-Teilkorpora *Nachrichtenleicht* und *Klexikon* mit dem Anteil in den Leipziger Korpora. 
+
+
+```{r plot-German, echo=FALSE, cache=TRUE}
+library(RColorBrewer)
+barplot(RCs[c(1,4,2,3),1] ~ RCs[,2], ylab = "Relativsätze pro 1000 Sätze", las = 2, names.arg = "", xlab = "", col =  brewer.pal(4, "Set2"))
+par(xpd=TRUE)
+legend(0, -5, legend=c("Zeitungsnachrichten", "Nachrichtenleicht", "Wikipedia", "Klexikon"), col=brewer.pal(4, "Set2"), lty=1, lwd = 5, cex=.8, bty = "n", bg = "n")
+```
+
+Wie vorhergesagt, liegt der Anteil der Relativsätze in den Nachrichten in einfacher Sprache (orange) niedriger als in den normalsprachlichen Zeitungsnachrichten (grün). Entgegen unserer Erwartungen zeigt sich aber zwischen der Kinder-Enzyklopädie *Klexikon* (pink) und den normalsprachlichen *Wikipedia*-Einträgen kein nennenswerter Unterschied. Hierfür gibt es viele mögliche Gründe. Vielleicht war den Autoren der *Klexikon*-Einträge nicht bewusst, dass Relativsätze relativ schwierig zu verstehen sind. Oder sie waren der Ansicht, dass Relativsätze zwar schwierig zu verstehen sind, ihrer Zielgruppe aber dennoch keine Probleme bereiten sollten. Wir wissen es nicht. Zukünftige Forschung auf der Grundlage von KED wird unser Verständnis sprachlicher Komplexität verbessern zum Nutzen von Lesenden mit verminderter Lesefähigkeit mit und ohne kognitive Einschränkungen. 
+
+### Autor  
+
+Daniel Jach <danieljach\@protonmail.com>
+
+### Lizens und Copyright  
+
+&copy; Daniel Jach, Shanghai Normal University, China
+
+Lizensiert unter [CC BY-NC 3.0 DE](https://creativecommons.org/licenses/by-nc/3.0/de/legalcode).
+
+
+## English
+
+### What is KED?
+
+The Corpus Simple German (KED) is a large digital collection of texts in simple German from genres of educational and public discourse. For example, KED contains lexicon entries, instructions, narratives, and informative and explanatory texts on different academic, political, economic, cultural, and legal topics. The texts are written for readers who have not (yet) developed reading skills good enough to understand these genres in academic language ["Bildungssprache", @Gogolin.2016], such as children and readers with permanent cognitive impairments. KED is aimed at foreign language learners, teachers, and linguistic researchers as a resource for data-driven foreign language learning at lower levels of proficiency and for corpus-based research into linguistic complexity.
+
+KED is available for download [here]().
+
+### What is KED made of?
+
+The KED texts were scraped from different online websites using *Sketch Engine* [@Kilgarriff.2014, [https://www.sketchengine.eu/](https://www.sketchengine.eu/)].
+
+
+```{r read-in-texts, echo=FALSE, cache=TRUE}
+```
+
+
+```{r overview-table-English, echo=FALSE, cache=TRUE}
+
+sources<-unique(data$SOURCE)
+
+df<-data.frame(matrix(nrow = length(sources), ncol = 2))
+for(i in 1:length(sources)){
+  rownames(df)[i]<-sources[i]
+  df[i,1]<-nrow(data[data$SOURCE == sources[i],])
+  df[i,2]<-wordcount(data$TEXT[data$SOURCE == sources[i]], sep = " ")
+}
+
+df<-rbind(df, colSums(df)) 
+rownames(df)[nrow(df)]<-"Total"
+
+df["klexikon",3]<-"Texts from [www.klexikon.zum.de](https://klexikon.zum.de), an online encyclopedia for children similar to *Wikipedia*"
+df["klexikon",4]<-"[CC BY-NC 3.0 DE](https://creativecommons.org/licenses/by-nc/3.0/de/deed.en)"
+df["nachrichtenleicht",3]<-"Texts from [www.nachrichtenleicht.de](https://www.nachrichtenleicht.de), a news website in plain language by German public service radio"
+df["nachrichtenleicht",4]<-"[Deutschlandradio](https://www.nachrichtenleicht.de/impressum.2051.de.html)"
+df["oekoleo",3]<-"Texts from [www.oekoleo.de](https://www.oekoleo.de), an educational website for children about environment protection published by the Hessian government"
+df["oekoleo",4]<-"[CC BY-NC 3.0 DE](https://creativecommons.org/licenses/by-nc/3.0/de/deed.en)"
+# df["geolino",3]<-"Texts from [www.geo.de/geolino](https://www.geo.de/geolino), the children's version of the German educational monthly magazine *Geo*. The website contains educational texts, handicraft and game instructions, recipes, and encyclopedic entries."
+# df["geolino",4]<-"[G+J Medien GmbH](https://www.geo.de/geolino/impressum)"
+df["rossipotti",3]<-"Texts from [www.rossipotti.de](https://www.rossipotti.de), an online literary magazin for children including narrative texts, an encyclopaedia of literature, informative texts about genres, authors, history of literature, book reviews, and so on"
+df["rossipotti",4]<-"[Rossipotti e.V.](https://www.rossipotti.de/ausgabe28/impressum.html)"
+df["rechte-einfach",3]<-"Texts in plain language about legal topics from different sources: [www.ich-kenne-meine-rechte.de](https://www.ich-kenne-meine-rechte.de), [UN Behinderrechtskonvention in Leichter Sprache](https://www.bmas.de/SharedDocs/Downloads/DE/PDF-Publikationen/a729L-un-konvention-leichte-sprache.pdf;jsessionid=54B4318ACC82F22C3D6B668346E0E38F.delivery2-master?__blob=publicationFile&v=1), [Kinder-Rechte in Leichter Sprache](https://www.awo.org/sites/default/files/2019-07/AWO_UN_Kinderrechte_Leichte%20Sprache_Ansicht.pdf)"
+df["rechte-einfach",4]<-"[*Institut für Menschenrechte*](http://www.ich-kenne-meine-rechte.de/index.php?menuid=44&reporeid=28), [*AWO-Bundesverband*](https://www.awo.org/impressum), [CC BY-NC-ND 4.0](https://creativecommons.org/licenses/by-nc-nd/4.0/legalcode)"
+df["labbe",3]<-"Narratives, fairy tales, handicraft and game instructions, and so on for children from [www.labbe.de/lesekorb](http://www.labbe.de/lesekorb)"
+df["labbe",4]<-"[Labbé](https://www.labbe.de/lesekorb/index.asp?themaid=89&titelid=710)"
+df["hanisauland",3]<-"Texts, lexicon entries, book reviews, etc. on political topics from the educational website for children [www.hanisauland.de](https://www.hanisauland.de/index.html) by the Bundeszentrale für politische Bildung"
+df["hanisauland",4]<-"[CC BY-NC 3.0 DE](https://creativecommons.org/licenses/by-nc/3.0/de/deed.en)"
+df["simplyscience",3]<-"Texts and lexicon entries on scientific topics and instructions for playful experiments for kids and teenagers [www.simplyscience.ch](https://www.simplyscience.ch/home.html)"
+df["simplyscience",4]<-"[SimplyScience Stiftung](https://www.simplyscience.ch/ueber-uns.html)"
+
+
+rownames(df)<-capitalize(rownames(df))
+
+options(knitr.kable.NA = '')
+kable(df, format = "html", col.names = c("Texts", "Words", "Source", "Copyright"), row.names = TRUE) %>%
+  kable_styling(bootstrap_options = c("basic", "responsive"))
+```
+A large part of KED consists of texts in plain language ["leichte Sprache", "einfache Sprache", @Kellermann.2014]. In general plain language attempts to make difficult texts more understandable to readers with low reading skills without corrupting the content [@Stefanowitsch.2014].
+
+Plain language ("leichte Sprache") | Plain language ("einfache Sprache")
+-----------------------------------| -----------------------------------
+Plain language ("leichte Sprache") follows certain linguistic and ortho-/typographic principles [@LeichteSprache.2017] to make difficult texts on legal topics more accessible to readers with cognitive and perceptual impairments. The texts in the KED subcorpus *Rechte-einfach* are good examples of plain language in this sense. | Plain language ("einfache Sprache") does not follow specific principles and addresses a larger audience without cognitive impairments but with difficulties reading texts [12.1% of the adult German population in the year 2018, according to @Grotlueschen.2019, p. 5]. The texts in the KED subcorpus *Nachrichtenleicht* are a good example of plain language in this sense. 
+
+Another large part of KED consists of **texts written for children** with educational purpose. Good examples are the texts in the subcorpus *Oekoleo*. In addition KED contains **narrative texts for children** (e.g., stories, fairy tales, short stories), for instance, in the subcorpus *Rossipotti*. 
+
+KED does not contain texts that are specifically written for foreign language learners such as learning material by the *Goethe Institut* or *Deutsche Welle*. Even though KED is intended as a resource for foreign language learning, German-as-a-foreign-language texts were not included. The reason is that these texts are often not written in simple language and, in addition, do not reflect actual native language use [@Tschirner.2019]. 
+
+### What is KED made for?
+#### Data-driven foreign language learning at low proficiency levels
+
+Corpus-linguistic research indicates that much of adult native language use is not based on grammatical rules but follows repetitive patterns and consists to a considerable extent of prefabricated chunks [@Sinclair.1991; @Wray.2000]. Both native and nonnative learners acquire the patterns and chunks of their target language through practice from language use [@Ellis.2016; @Tomasello.2003]. 
+
+In line with this, data-driven language learning (DDL) exposes learners to large amounts of input to enable usage-based language acquisition. However, while much of usage-based language acquisition in real life occurs incidentally and unconsciously, in the classroom learners are aware of what they are doing. In DDL learners act as linguistic researchers and use digital corpus technology (so-called concordancers) to discover the usage patterns and chunks of the target language by themselves [@Cobb.2015; @Johns.1991]. KED enables DDL at low proficiency levels with learners whose reading skills are not yet good enough to engage with authentic (academic) language. 
+
+For example, foreign language learners (and teachers) often struggle with the grammar of German two-way prepositions (*in*, *an*, *auf*...) that occur with either dative or accusative case depending on meaning and context of use [@Willems.2018]. However, recent corpus-linguistic research [@Jach.2020] indicates that the use of two-way prepositions is much more repetitive and bound to specific lexical items than previously thought. To discover the typical usage patterns of two-way prepositions, learners use a concordancer [for instance, *AntConc* by @Anthony.2019, [www.laurenceanthony.net](https://www.laurenceanthony.net/software/antconc/)] to search through the KED subcorpus *Nachrichtenleicht* for the three most common two-way prepositions *in*, *an*, and *auf* followed by different forms of the definite article. A sample of the search results is given below in the form of concordances (or KWICS). 
+
+Left context | Keyword | Right context 
+-------------------------------|------|-------------------------------
+Es ist ein Staat auf den Britischen Inseln. Sie liegen | in der | Nord-See. Die größte Insel heißt Groß-Britannien. 
+Der Grüne Hügel ist eine Anhöhe | in der | Stadt Bayreuth. Dort ließ der Komponist Richard Wagner 
+die Signale von dem Fahrzeug und schickt sie weiter | an die | Forscher auf der Erde. Das ist wichtig, weil
+Am Ende stand es 28 zu 24 für Kiel. Das Pokal-End-Spiel war | in der | Stadt Hamburg. Mehr als 13.000 Menschen 
+Jungen und ihr Fußball-Trainer waren mehr als 2 Wochen | in der | Höhle eingeschlossen. Die Jungen wurden
+wollen mit den Bränden zeigen, wie schlimm das Leben | in dem | Lager ist. Viele Zelte, Hütten und Wohnungen sind zerstört. 
+Die Bundes-Regierung hat beschlossen: Sie beteiligt sich | an der | Entschädigung von den Kunden. Es geht dabei um 
+Eine Rakete kann sehr schnell | in den | Himmel fliegen. Sie kann Astronauten oder Vorräte  
+Die deutsche Fußball-National-Mannschaft hat | in der | Nations League gegen die Niederlande gespielt. 
+Obwohl es einen schweren Anschlag | in der | Stadt Halle gegeben hat, sollen die jüdischen Kultur-Tage
+Ich habe alle Regeln beachtet. Die Tische | in dem | Restaurant haben weit genug auseinander gestanden
+Museen. Zum Beispiel das Haus der Geschichte | in der | Stadt Bonn. Da kann man Sachen sehen,
+Eine Kita ist ein Ort, | an dem | kleine Kinder spielen und lernen. Erzieher und
+Sie haben vorher 35 Jahre lang | in die | Renten-Versicherung eingezahlt. Die SPD will 
+ist 4 Jahre lang Präsident im Land USA gewesen. Das war | in den | Jahren 1989 bis 1993. In dieser Zeit 
+heißt Yamoussoukro. Die meisten Menschen | in der | Elfenbein-Küste sprechen Französisch.
+Kohlen-Dioxid steigt in die Luft und sorgt dafür, dass es | auf der | Erde immer wärmer wird. Das nennt 
+Ein End-Lager ist ein Ort, | an dem | man etwas lange Zeit aufbewahren kann. Meistens ist damit  
+Jetzt hat die neue Saison angefangen. Das erste Rennen war | in dem | Land Österreich. 
+ist zuerst in dem Land China gewesen. Viele Menschen | auf der | ganzen Welt haben sich angesteckt, auch in 
+
+Working through the concordances the learners discover, for instance, that the preposition *in* is much more common than the other two prepositions and often occurs with *der* (*in der*). Like in many textbooks [@Funk.2016, p. 211] the prepositions often occur with prepositional complements of movement and posture verbs (e.g., *Sie liegen in der Nord-See*) but also with local (and sometimes temporal) adjuncts (e.g., *meisten Menschen in der Elfenbein-Küste*). Moreover, dative is much more frequent than accusative. Generalizing across the contexts the learners might conclude that accusative is used in telic contexts, whereas dative is used in atelic contexts. In addition, the concordances contain more complex, academic-language constructions, for instance, the phrasal verb *sich beteiligen an* and two prepositional relative clauses (*ein Ort, an dem*). And so on. Searches in different (sub-)corpora produce different (or similar) relative frequencies and patterns. Learners should continue to explore the concordances and try to generalize across their observations. Typical exercises involve marking usage patterns in the concordances, sorting concordances into different groups, imitating their structure, recasting them, enriching them, and so on. 
+
+For more and more detailed descriptions of classroom activities see the DDL publications cited above or @Dubova.2016, @Lenko-Szymanska.2015 and @Flowerdew.2012. After some practice many students find DDL intriguing and fun, and a recent meta-study indicates that DDL is both effective and often more efficient than other teaching approaches [@Boulton.2017].
+
+#### Linguistic research into complexity
+
+KED is useful to researchers who study linguistic complexity. Complexity is difficult to define and researchers have proposed different measures of complexity [@Neumann.2018]. For instance, some assume that complexity increases with the average length of words and sentences and the so-called type-token ratio, that is, the number of different words divided by the total number of words in a text or corpus. If that is so, then these measures should (on average) be lower in KED than in normal language corpora. By way of illustration, compare the KED subcorpora *Nachrichtenleicht* and *Klexikon* to collections of German News and *Wikipedia* articles taken from the Leipzig Corpus Collection [@Goldhahn.2012]. As predicted, the KED subcorpora are less complex than the respective normal language corpora on all three measures. 
+
+```{r compare-corpora-table, echo=FALSE, cache=TRUE}
+df<-data.frame(wordLength, sentLength, ttratio)
+rownames(df)<-c("German News", "German Wikipedia", "Klexikon", "Nachrichtenleicht")
+kable(df[c(1,4,2,3),], format = "html", row.names = TRUE, digits = 2, col.names = c("Word length", "Sentence length", "Type/Token")) %>%
+  kable_styling(bootstrap_options = c("striped", "hover", "condensed", "responsive"))
+```
+
+To give another example, psycholinguists agree that sentences with relative clauses such as *the woman who ran is now swimming* ("die Frau, die gerannt ist, geht jetzt schwimmen") are more difficult to understand than simple sentences [@Gibson.2000]. If relative clauses are difficult to understand, then simple language should avoid them. The diagram below compares the proportion of relative clauses in the KED subcorpora *Nachrichtenleicht* and *Klexikon* to the normal language corpora. 
+
+```{r plot, echo=FALSE, cache=TRUE}
+library(RColorBrewer)
+barplot(RCs[c(1,4,2,3),1] ~ RCs[,2], ylab = "Relative clauses / 1000 sentences", las = 2, names.arg = "", xlab = "", col =  brewer.pal(4, "Set2"))
+par(xpd=TRUE)
+legend(0, -5, legend=c("German News", "Nachrichtenleicht", "German Wikipedia", "Klexikon"), col=brewer.pal(4, "Set2"), lty=1, lwd = 5, cex=.8, bty = "n", bg = "n")
+```
+
+In line with our prediction, the proportion of relative clauses is much lower in the plain language news (orange) than in the normal language news (green). However, contrary to our expectations, there is no much difference between the kids encyclopedia *Klexikon* (pink) and adult *Wikipedia* (purple). There are many possible reasons for this difference. Maybe the *Klexikon* writers are not aware that relative clauses are sometimes difficult to understand. Or they are aware of that but thought that their readers would be able to handle more complex language without any problems. We do not know. Future research based on KED will improve our understanding of linguistic complexity and benefit readers with low reading skills both with and without cognitive impairments. 
+
+
+### Author  
+
+Daniel Jach <danieljach\@protonmail.com>
+
+### License and Copyright  
+
+&copy; Daniel Jach, Shanghai Normal University, China
+
+Licensed under the [CC BY-NC 3.0 DE](https://creativecommons.org/licenses/by-nc/3.0/de/legalcode).
+
+
+
+# References
+
+
+

@@ -1,0 +1,1 @@
+CRISPR/Cas9 ist eine Methode, die in nur wenigen Jahren nicht nur die Gentechnik, sondern die Molekularbiologie im Allgemeinen einen Sprung nach vorne gebracht hat. Die Methode wird angewandt, um DNA an spezifischen Stellen zu verändern, man spricht dabei auch von Genomeditierung.
