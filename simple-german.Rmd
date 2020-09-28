@@ -27,7 +27,7 @@ library(Hmisc)
 
 Das Korpus Einfaches Deutsch (KED) ist eine große digitale Sammlung von Texten auf einfachem Deutsch aus Bildungsgenres und Genres des öffentlichen Diskurses. KED enthält zum Beispiel Lexikoneinträge, Anleitungen, Erzählungen und Texte über schulisches Fachwissen oder gesellschaftlich relevante Themen wie Politik, Wirtschaft, Kultur und Gesetze. Die Texte sind ohne sprachpädagogische Absicht für Lesende geschrieben, die noch nicht die nötigen Fähigkeiten für das Lesen bildungssprachlicher Texte ["Bildungssprache", @Gogolin.2016] entwickelt haben oder sie nicht entwickeln können, zum Beispiel Kinder oder Lesende mit dauerhaften kognitiven Einschränkungen. KED ist gedacht als Resource für daten-geleitetes Deutsch-als-Fremdsprache (DaF)-Lernen auf Anfängerniveau und für die Erforschung sprachlicher Komplexität und richtet sich an Lernende, Lehrende und linguistisch Forschende auf diesen Gebieten. 
 
-Sie können KED [hier]() herunterladen. 
+Sie können KED [hier](https://github.com/daniel-jach/simple-german) herunterladen. 
 
 ### Woraus besteht KED?
 
@@ -210,7 +210,7 @@ Lizensiert unter [CC BY-NC 3.0 DE](https://creativecommons.org/licenses/by-nc/3.
 
 The Corpus Simple German (KED) is a large digital collection of texts in simple German from genres of educational and public discourse. For example, KED contains lexicon entries, instructions, narratives, and informative and explanatory texts on different academic, political, economic, cultural, and legal topics. The texts are written for readers who have not (yet) developed reading skills good enough to understand these genres in academic language ["Bildungssprache", @Gogolin.2016], such as children and readers with permanent cognitive impairments. KED is aimed at foreign language learners, teachers, and linguistic researchers as a resource for data-driven foreign language learning at lower levels of proficiency and for corpus-based research into linguistic complexity.
 
-KED is available for download [here]().
+KED is available for download [here](https://github.com/daniel-jach/simple-german).
 
 ### What is KED made of?
 
