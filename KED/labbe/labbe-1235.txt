@@ -1,0 +1,1 @@
+Luftbilder Geschicklichkeits-Zeichenspiel für Paare Die Spieler bilden Paare. Ein Partner übernimmt die Rolle des Luftzeichners, der andere beobachtet ihn dabei. Die Aufgabe des Luftzeichners ist es, einen Gegenstand mit seinen Konturen in die Luft zu zeichnen. Der Beobachter muss herausfinden, um welchen Gegenstand es sich handelt. Danach werden die Rollen getauscht.
