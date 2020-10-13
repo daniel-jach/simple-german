@@ -27,7 +27,7 @@ library(Hmisc)
 
 Das Korpus Einfaches Deutsch (KED) ist eine große digitale Sammlung von Texten auf einfachem Deutsch aus Bildungsgenres und Genres des öffentlichen Diskurses. KED enthält zum Beispiel Lexikoneinträge, Anleitungen, Erzählungen und Texte über schulisches Fachwissen oder gesellschaftlich relevante Themen wie Politik, Wirtschaft, Kultur und Gesetze. Die Texte sind ohne sprachpädagogische Absicht für Lesende geschrieben, die noch nicht die nötigen Fähigkeiten für das Lesen bildungssprachlicher Texte ["Bildungssprache", @Gogolin.2016] entwickelt haben oder sie nicht entwickeln können, zum Beispiel Kinder oder Lesende mit dauerhaften kognitiven Einschränkungen. KED ist gedacht als Resource für daten-geleitetes Deutsch-als-Fremdsprache (DaF)-Lernen auf Anfängerniveau und für die Erforschung sprachlicher Komplexität und richtet sich an Lernende, Lehrende und linguistisch Forschende auf diesen Gebieten. 
 
-Sie können KED <a href="https://downgit.github.io/#/home?url=https://github.com/daniel-jach/simple-german/blob/master/KED.zip&fileName=KED" download>hier</a>. herunterladen. 
+Sie können KED <a href="https://downgit.github.io/#/home?url=https://github.com/daniel-jach/simple-german/blob/master/KED.zip&fileName=KED" download>hier</a> herunterladen. 
 
 ### Woraus besteht KED?
 
