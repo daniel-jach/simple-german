@@ -1,1 +1,0 @@
-Aufräumen mit Farben Aufräum- und Farbenlernspiel Der Spielleiter nennt eine Farbe, z.B. rot, oder er würfelt mit einem Farbwürfel. Wird die Farbe Rot gewürfelt, heißt das für die Spieler, dass jetzt alle roten Gegenstände aufgeräumt werden müssen. Es wird so lange gewürfelt, bis nichts mehr herumliegt.

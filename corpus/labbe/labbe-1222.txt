@@ -1,1 +1,0 @@
-Nicht mehr als 21 Spannendes Würfel-Rechenspiel Die Spieler sitzen im Kreis. Der erste Spieler nimmt einen Würfel und würfelt so lange, bis die Summe der Würfelaugen aus den einzelnen Würfen der Zahl 21 möglichst nahe kommt. Wer über die 21 kommt, scheidet aus. Das Spiel wird so lange weitergespielt, bis nur noch ein Spieler übrig ist.

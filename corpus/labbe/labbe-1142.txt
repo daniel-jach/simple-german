@@ -1,1 +1,0 @@
-Abräum-Würfeln Aufräum-Spiel mit Zufallscharakter Nach dem Essen wird gewürfelt. Jeder Teilnehmer muss so viele Gegenstände vom Tisch abräumen und in die Spülmaschine einräumen, wie er Augen gewürfelt hat.

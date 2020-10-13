@@ -1,1 +1,0 @@
-Ding-dong Kreisspiel zum Namenlernen Die Gruppe stellt sich im Kreis auf. Ein Teilnehmer steht in der Mitte. Wenn er auf einen Mitspieler deutet, sagt er entweder ding, dong oder ding-dong. Bei ding muss derjenige, auf den gedeutet wurde, die Vornamen seiner Nachbarn links und rechts sagen, bei dong die Nachnamen und bei ding-dong die Vor- und Nachnamen.

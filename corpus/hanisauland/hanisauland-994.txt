@@ -1,1 +1,0 @@
-Volltextsuche Die Suche findet zu jedem Wort alle Worte, die zumindest so beginnen. Polit würde also Begriffe wie Politik, politisch, Politikerin etc. finden.
