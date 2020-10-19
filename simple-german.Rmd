@@ -17,11 +17,13 @@ library(kableExtra)
 library(Hmisc)
 ```
 
-<p style="color:red;font-weight:bold;text-align:center;"><br>Corpus and website still under construction and subject to changes, corpus not available for download yet<br>Korpus und Webseite noch im Aufbau, Änderungen vorbehalten, Korpus noch nicht zum Download verfügbar</p>
+<p style="color:red;font-weight:bold;text-align:center;"><br>Corpus and website still under construction and subject to changes<br>Korpus und Webseite noch im Aufbau, Änderungen vorbehalten</p>
 
 # {.tabset}
 
 ## Deutsch 
+
+<p style="text-align:center;">Letzte Änderung 19. Oktober 2020</p>
 
 ### Was ist KED? 
 
@@ -205,6 +207,8 @@ Lizensiert unter [CC BY-NC 3.0 DE](https://creativecommons.org/licenses/by-nc/3.
 
 
 ## English
+
+<p style="text-align:center;">Last change  October 19, 2020</p>
 
 ### What is KED?
 
