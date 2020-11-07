@@ -27,7 +27,7 @@ library(Hmisc)
 
 ### Was ist KED? 
 
-Das Korpus Einfaches Deutsch (KED) ist eine große digitale Sammlung von Texten auf einfachem Deutsch aus Bildungsgenres und Genres des öffentlichen Diskurses. KED enthält zum Beispiel Lexikoneinträge, Anleitungen, Erzählungen und Texte über schulisches Fachwissen oder gesellschaftlich relevante Themen wie Politik, Wirtschaft, Kultur und Gesetze. Die Texte sind ohne sprachpädagogische Absicht für Lesende geschrieben, die noch nicht die nötigen Fähigkeiten für das Lesen bildungssprachlicher Texte ["Bildungssprache", @Gogolin.2016] entwickelt haben oder sie nicht entwickeln können, zum Beispiel Kinder oder Lesende mit dauerhaften kognitiven Einschränkungen. KED ist gedacht als Resource für daten-geleitetes Deutsch-als-Fremdsprache (DaF)-Lernen auf Anfängerniveau und für die Erforschung sprachlicher Komplexität und richtet sich an Lernende, Lehrende und linguistisch Forschende auf diesen Gebieten. 
+Das Korpus Einfaches Deutsch (KED) ist eine große digitale Sammlung von Texten auf einfachem Deutsch aus Bildungsgenres und Genres des öffentlichen Diskurses. KED enthält zum Beispiel Lexikoneinträge, Anleitungen, Erzählungen und Texte über schulisches Fachwissen oder gesellschaftlich relevante Themen wie Politik, Wirtschaft, Kultur und Gesetze. Die Texte sind ohne sprachpädagogische Absicht für Lesende geschrieben, die noch nicht die nötigen Fähigkeiten für das Lesen bildungssprachlicher Texte ["Bildungssprache", @Gogolin.2016] entwickelt haben oder sie nicht entwickeln können, zum Beispiel Kinder oder Lesende mit dauerhaften kognitiven Einschränkungen. KED ist gedacht als Ressource für daten-geleitetes Deutsch-als-Fremdsprache (DaF)-Lernen auf Anfängerniveau und für die Erforschung sprachlicher Komplexität und richtet sich an Lernende, Lehrende und linguistisch Forschende auf diesen Gebieten. 
 
 Sie können KED <a href="https://downgit.github.io/#/home?url=https://github.com/daniel-jach/simple-german/blob/master/KED.zip&fileName=KED" download>hier</a> herunterladen. 
 
@@ -36,15 +36,15 @@ Sie können KED <a href="https://downgit.github.io/#/home?url=https://github.com
 Die in KED enthaltenen Texte sind verschiedenen Internetseiten mittels *Sketch Engine* [@Kilgarriff.2014, [https://www.sketchengine.eu/](https://www.sketchengine.eu/)] entnommen. 
 
 ```{r read-in-texts, echo=FALSE, cache=TRUE}
-dirsList<-list.dirs(path = "./corpus/", full.names = FALSE, recursive = TRUE)[-1]
+dirsList<-list.dirs(path = "./KED/", full.names = FALSE, recursive = TRUE)[-1]
 
 data<-data.frame(matrix(nrow = 0, ncol = 3))
 for(i in 1:length(dirsList)){
-  path<-paste("./corpus/", dirsList[i], "/", sep = "")
+  path<-paste("./KED/", dirsList[i], "/", sep = "")
   filesList<-list.files(path = path, recursive = TRUE, pattern = "\\.txt$", full.names = TRUE)
   for(j in 1:length(filesList)){
     df<-as.data.frame(read.delim(filesList[j], quote = "", header = FALSE, stringsAsFactors = FALSE))
-    df$FILE<-gsub("./corpus/klexikon//", "", filesList[j], fixed = TRUE)
+    df$FILE<-gsub(paste(path,"/", sep=""), "", filesList[j], fixed = TRUE)
     df$SOURCE<-dirsList[i]
     data<-rbind(data, df)
   }
@@ -72,8 +72,6 @@ df["nachrichtenleicht",3]<-"Texte von [www.nachrichtenleicht.de](https://www.nac
 df["nachrichtenleicht",4]<-"[Deutschlandradio](https://www.nachrichtenleicht.de/impressum.2051.de.html)"
 df["oekoleo",3]<-"Texte von [www.oekoleo.de](https://www.oekoleo.de), einer Internetseite der hessischen Regierung, die Kinder über Natur- und Umweltschutz informiert"
 df["oekoleo",4]<-"[CC BY-NC 3.0 DE](https://creativecommons.org/licenses/by-nc/3.0/de/deed.en)"
-# df["geolino",3]<-"Texte von [www.geo.de/geolino](https://www.geo.de/geolino), der Kinder-Version des bekannten deutschsprachigen Monatsmagazins *Geo*. Die Webseite enthält allgemeinbildende Texte, Bastel- und Spieleanleitungen, Rezepte und Enzyklopädie-Einträge."
-# df["geolino",4]<-"[G+J Medien GmbH](https://www.geo.de/geolino/impressum)"
 df["rossipotti",3]<-"Texte von [www.rossipotti.de](https://www.rossipotti.de), einem Online-Literaturmagazin für Kinder, das neben narrativen Texten ein Literaturlexikon, informative Texte über Genres, Autoren, Literaturgeschichte, Buchrezensionen und anderes enthält."
 df["rossipotti",4]<-"[Rossipotti e.V.](https://www.rossipotti.de/ausgabe28/impressum.html)"
 df["rechte-einfach",3]<-"Texte in leichter Sprache über juristische Themen und Gesetze aus verschiedenen Quellen: [www.ich-kenne-meine-rechte.de](https://www.ich-kenne-meine-rechte.de), [UN Behinderrechtskonvention in Leichter Sprache](https://www.bmas.de/SharedDocs/Downloads/DE/PDF-Publikationen/a729L-un-konvention-leichte-sprache.pdf;jsessionid=54B4318ACC82F22C3D6B668346E0E38F.delivery2-master?__blob=publicationFile&v=1), [Kinder-Rechte in Leichter Sprache](https://www.awo.org/sites/default/files/2019-07/AWO_UN_Kinderrechte_Leichte%20Sprache_Ansicht.pdf)"
@@ -96,12 +94,12 @@ kable(df, format = "html", col.names = c("Texte", "Wörter", "Quelle", "Copyrigh
 Ein großer Teil von KED besteht aus Texten in vereinfachter Sprache ["leichte Sprache", "einfache Sprache", @Kellermann.2014]. Vereinfachte Sprache soll Texte für Lesende mit verminderter Lesefähigkeit verständlicher machen, ohne dabei den Inhalt zu verzerren [@Stefanowitsch.2014]. 
 
 Leichte Sprache | Einfache Sprache
------------------------------------| -----------------------------------
+-----------------------------------|-----------------------------------
 Leichte Sprache folgt bestimmten sprachlichen und ortho- und typografischen Prinzipien [@LeichteSprache.2017], um schwierige juristische Texte für Lesende mit kognitiven oder perzeptuellen Einschränkungen verständlicher zu machen. Die Texte im KED-Teilkorpus *Rechte-einfach* sind gute Beispiele für Texte in leichter Sprache. | Einfache Sprache folgt keinen besonderen Prinzipien und richtet sich an einen größeren Kreis von Lesenden mit Schwierigkeiten beim Textverständnis [12.1% der erwachsenen Bevölkerung im Jahr 2018, @Grotlueschen.2019, p. 5]. Die Texte im KED-Teilkorpus *Nachrichtenleicht* sind gute Beispiele für Texte in einfacher Sprache. 
 
 Ein weiterer großer Teil von KED besteht aus **allgemein- und fachlich bildenden Texten für Kinder**. Gute Beispiele hierfür sind die Texte im Teilkorpus *Oekoleo*. Außerdem enthält KED einige **narrative Texte für Kinder** (z.B. Erzählungen, Märchen, Kurzgeschichten), zum Beispiel im Teilkorpus *Rossipotti*. 
 
-KED enthält *keine* Texte mit explizit sprachpädagogischer Absicht, wie zum Beispiel Texte vom *Goethe Institut* oder von der *Deutschen Welle*, die speziell für DaF-Lernende geschrieben sind. Obwohl KED als Resource für den DaF-Unterricht gedacht ist, sind keine solchen Texte in KED enthalten, weil diese Texte oft nicht in einfachem Deutsch geschrieben sind und auch häufig nicht den wirklichen Sprachgebrauch abbilden [@Tschirner.2019]. 
+KED enthält *keine* Texte mit explizit sprachpädagogischer Absicht, wie zum Beispiel Texte vom *Goethe Institut* oder von der *Deutschen Welle*, die speziell für DaF-Lernende geschrieben sind. Obwohl KED als Ressource für den DaF-Unterricht gedacht ist, sind keine solchen Texte in KED enthalten, weil diese Texte oft nicht in einfachem Deutsch geschrieben sind und auch häufig nicht den wirklichen Sprachgebrauch abbilden [@Tschirner.2019]. 
 
 ### Wofür ist KED gemacht? 
 #### Daten-geleitetes Fremdsprachenlernen auf Anfängerniveau
