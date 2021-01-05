@@ -17,8 +17,6 @@ library(kableExtra)
 library(Hmisc)
 ```
 
-<p style="color:red;font-weight:bold;text-align:center;"><br>Corpus and website still under construction and subject to changes<br>Korpus und Webseite noch im Aufbau, Änderungen vorbehalten</p>
-
 # {.tabset}
 
 ## Deutsch 
